@@ -1,4 +1,4 @@
-import * as contactsService from "../models/contacts/index.js";
+import contactsService from "../models/contacts/index.js";
 import { HttpError } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
 
@@ -8,8 +8,8 @@ const getAll = async (req, res) => {
 };
 
 const getById = async (req, res) => {
-  const { id } = req.params;
-  const contact = await contactsService.getContactById(id);
+  const { contactId } = req.params;
+  const contact = await contactsService.getContactById(contactId);
   if (contact === null) {
     throw HttpError(404);
   }
@@ -22,8 +22,8 @@ const add = async (req, res) => {
 };
 
 const removeById = async (req, res) => {
-  const { id } = req.params;
-  const removeContact = await contactsService.removeContact(id);
+  const { contactId } = req.params;
+  const removeContact = await contactsService.removeContact(contactId);
   if (removeContact === null) {
     throw HttpError(404);
   }
@@ -33,8 +33,8 @@ const removeById = async (req, res) => {
 };
 
 const updateById = async (req, res) => {
-  const { id } = req.params;
-  const changes = await contactsService.updateContact(id, req.body);
+  const { contactId } = req.params;
+  const changes = await contactsService.updateContact(contactId, req.body);
   if (changes === null) {
     throw HttpError(404);
   }
