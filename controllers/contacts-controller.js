@@ -1,15 +1,15 @@
-import contactsService from "../models/contacts/index.js";
+import ContactModel from "../models/contacts/Contact.js";
 import { HttpError } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
 
 const getAll = async (req, res) => {
-  const contacts = await contactsService.listContacts();
+  const contacts = await ContactModel.find({});
   res.json(contacts);
 };
 
 const getById = async (req, res) => {
   const { contactId } = req.params;
-  const contact = await contactsService.getContactById(contactId);
+  const contact = await ContactModel.findById(contactId);
   if (contact === null) {
     throw HttpError(404);
   }
@@ -17,13 +17,13 @@ const getById = async (req, res) => {
 };
 
 const add = async (req, res) => {
-  const newContact = await contactsService.addContact(req.body);
+  const newContact = await ContactModel.create(req.body);
   res.status(201).json(newContact);
 };
 
 const removeById = async (req, res) => {
   const { contactId } = req.params;
-  const removeContact = await contactsService.removeContact(contactId);
+  const removeContact = await ContactModel.findByIdAndDelete(contactId);
   if (removeContact === null) {
     throw HttpError(404);
   }
@@ -34,7 +34,7 @@ const removeById = async (req, res) => {
 
 const updateById = async (req, res) => {
   const { contactId } = req.params;
-  const changes = await contactsService.updateContact(contactId, req.body);
+  const changes = await ContactModel.findByIdAndUpdate(contactId, req.body);
   if (changes === null) {
     throw HttpError(404);
   }
