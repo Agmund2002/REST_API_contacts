@@ -32,6 +32,12 @@ export const updateSchema = Joi.object({
   favorite: Joi.boolean(),
 });
 
+export const updateFavoriteSchema = Joi.object({
+  favorite: Joi.boolean().required().messages({
+    "any.required": "missing field favorite",
+  }),
+});
+
 export const mongooseContactSchema = new Schema(
   {
     name: {
