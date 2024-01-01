@@ -1,7 +1,10 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import UserModel from "../models/contacts/User";
 import { HttpError } from "../helpers";
 import { ctrlWrapper } from "../decorators";
+
+const { JWT_SECRET } = process.env;
 
 const singUp = async (req, res) => {
   const { email, password } = req.body;
@@ -25,6 +28,33 @@ const singUp = async (req, res) => {
   });
 };
 
+const singIn = async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await UserModel.findOne({ email });
+  if (!user) {
+    throw HttpError(401, "Email or password is wrong");
+  }
+
+  const passwordCompare = await bcrypt.compare(password, user.password);
+  if (!passwordCompare) {
+    throw HttpError(401, "Email or password is wrong");
+  }
+
+  const { _id: id } = user;
+  const token = jwt.sign({ id }, JWT_SECRET, { expiresIn: "1w" });
+  const activeUser = await UserModel.findByIdAndUpdate(id, { token });
+
+  res.json({
+    token: activeUser.token,
+    user: {
+      email: activeUser.email,
+      subscription: activeUser.subscription,
+    },
+  });
+};
+
 export default {
   singUp: ctrlWrapper(singUp),
+  singIn: ctrlWrapper(singIn),
 };
