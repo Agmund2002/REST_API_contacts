@@ -54,7 +54,21 @@ const singIn = async (req, res) => {
   });
 };
 
+const signOut = async (req, res) => {
+  const { _id: id } = req.user;
+
+  const user = await UserModel.findById(id);
+  if (!user) {
+    throw HttpError(401, "Not authorized");
+  }
+
+  await UserModel.findByIdAndUpdate(id, { token: "" });
+
+  res.sendStatus(204);
+};
+
 export default {
   singUp: ctrlWrapper(singUp),
   singIn: ctrlWrapper(singIn),
+  signOut: ctrlWrapper(signOut),
 };
