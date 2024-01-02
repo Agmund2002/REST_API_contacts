@@ -48,11 +48,13 @@ export const mongooseContactSchema = new Schema(
       type: String,
       match: [emailRegExp, "Doesn't match the format: example@mail.com"],
       required: [true, "Set email for contact"],
+      unique: true,
     },
     phone: {
       type: String,
       match: [phoneRegExp, "Doesn't match the format: (NNN) NNN-NNNN"],
       required: [true, "Set phone for contact"],
+      unique: true,
     },
     favorite: {
       type: Boolean,

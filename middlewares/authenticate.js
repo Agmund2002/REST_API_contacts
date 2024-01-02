@@ -8,12 +8,12 @@ const authenticate = async (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
-    return next(HttpError(401, "Authorization not define"));
+    return next(HttpError(401, "Not authorized"));
   }
 
   const [bearer, token] = authorization.split(" ");
   if (bearer !== "Bearer") {
-    return next(HttpError(401, "Invalid authorization field"));
+    return next(HttpError(401, "Not authorized"));
   }
 
   try {

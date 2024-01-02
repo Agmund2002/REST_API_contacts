@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import UserModel from "../models/contacts/User";
-import { HttpError } from "../helpers";
-import { ctrlWrapper } from "../decorators";
+import UserModel from "../models/contacts/User.js";
+import { HttpError } from "../helpers/index.js";
+import { ctrlWrapper } from "../decorators/index.js";
 
 const { JWT_SECRET } = process.env;
 
@@ -20,7 +20,7 @@ const singUp = async (req, res) => {
     password: hashPassword,
   });
 
-  res.json({
+  res.status(201).json({
     user: {
       email: newUser.email,
       subscription: newUser.subscription,
@@ -59,7 +59,7 @@ const signOut = async (req, res) => {
 
   await UserModel.findByIdAndUpdate(id, { token: "" });
 
-  res.sendStatus(204);
+  res.status(204).json("");
 };
 
 const getCurrent = async (req, res) => {
@@ -76,7 +76,10 @@ const updateSubscription = async (req, res) => {
 
   const changes = await UserModel.findByIdAndUpdate(id, req.body);
 
-  res.json(changes);
+  res.json({
+    email: changes.email,
+    subscription: changes.subscription,
+  });
 }
 
 export default {
