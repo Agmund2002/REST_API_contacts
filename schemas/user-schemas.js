@@ -17,6 +17,15 @@ export const userSchema = Joi.object({
   subscription: Joi.string().valid(...subscriptionList),
 });
 
+export const updateSubscriptionSchema = Joi.object({
+  subscription: Joi.string()
+    .valid(...subscriptionList)
+    .required()
+    .messages({
+      "any.required": "missing field subscription",
+    }),
+});
+
 export const mongooseUserSchema = new Schema(
   {
     password: {

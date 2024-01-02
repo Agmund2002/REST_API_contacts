@@ -71,9 +71,18 @@ const getCurrent = async (req, res) => {
   });
 };
 
+const updateSubscription = async (req, res) => {
+  const { _id: id } = req.user;
+
+  const changes = await UserModel.findByIdAndUpdate(id, req.body);
+
+  res.json(changes);
+}
+
 export default {
   singUp: ctrlWrapper(singUp),
   singIn: ctrlWrapper(singIn),
   signOut: ctrlWrapper(signOut),
   getCurrent: ctrlWrapper(getCurrent),
+  updateSubscription: ctrlWrapper(updateSubscription),
 };
