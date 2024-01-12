@@ -46,18 +46,28 @@ export const mongooseContactSchema = new Schema(
     },
     email: {
       type: String,
-      match: [emailRegExp, "doesn't match the format: example@mail.com"],
+      match: [emailRegExp, "Doesn't match the format: example@mail.com"],
       required: [true, "Set email for contact"],
+      unique: true,
     },
     phone: {
       type: String,
-      match: [phoneRegExp, "doesn't match the format: (NNN) NNN-NNNN"],
+      match: [phoneRegExp, "Doesn't match the format: (NNN) NNN-NNNN"],
       required: [true, "Set phone for contact"],
+      unique: true,
     },
     favorite: {
       type: Boolean,
       default: false,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
   },
-  { versionKey: false }
+  {
+    versionKey: false,
+    timestamps: true,
+  }
 );
