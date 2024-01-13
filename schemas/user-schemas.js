@@ -44,7 +44,14 @@ export const mongooseUserSchema = new Schema(
       enum: subscriptionList,
       default: "starter",
     },
-    token: String,
+    avatarURL: {
+      type: String,
+      required: true,
+    },
+    token: {
+      type: String,
+      default: "",
+    },
   },
   {
     versionKey: false,

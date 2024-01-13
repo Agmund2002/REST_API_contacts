@@ -1,5 +1,9 @@
+import fs from "fs/promises";
+import path from "path";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
+import Jimp from "jimp";
 import UserModel from "../models/contacts/User.js";
 import { HttpError } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
@@ -14,10 +18,13 @@ const singUp = async (req, res) => {
     throw HttpError(409, "Email in use");
   }
 
+  const avatarURL = gravatar.url(email, { d: "monsterid" });
+
   const hashPassword = await bcrypt.hash(password, 10);
   const newUser = await UserModel.create({
     ...req.body,
     password: hashPassword,
+    avatarURL,
   });
 
   res.status(201).json({
@@ -80,7 +87,29 @@ const updateSubscription = async (req, res) => {
     email: changes.email,
     subscription: changes.subscription,
   });
-}
+};
+
+const updateAvatar = async (req, res) => {
+  const { _id: id } = req.user;
+  const { path: oldPath, filename } = req.file;
+
+  const avatar = await Jimp.read(oldPath);
+  avatar.resize(250, 250).write(oldPath);
+
+  const newName = `${id}_${filename}`;
+  const avatarsPath = path.resolve("public", "avatars");
+  const newPath = path.join(avatarsPath, newName);
+
+  await fs.rename(oldPath, newPath);
+
+  const avatarURL = path.join("avatars", newName);
+
+  const changes = await UserModel.findByIdAndUpdate(id, { avatarURL });
+
+  res.json({
+    avatarURL: changes.avatarURL,
+  });
+};
 
 export default {
   singUp: ctrlWrapper(singUp),
@@ -88,4 +117,5 @@ export default {
   signOut: ctrlWrapper(signOut),
   getCurrent: ctrlWrapper(getCurrent),
   updateSubscription: ctrlWrapper(updateSubscription),
+  updateAvatar: ctrlWrapper(updateAvatar),
 };
