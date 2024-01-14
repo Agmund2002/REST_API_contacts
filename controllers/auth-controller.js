@@ -90,6 +90,10 @@ const updateSubscription = async (req, res) => {
 };
 
 const updateAvatar = async (req, res) => {
+  if (!req.file) {
+    throw HttpError(400, "File not found");
+  }
+
   const { _id: id } = req.user;
   const { path: oldPath, filename } = req.file;
 
