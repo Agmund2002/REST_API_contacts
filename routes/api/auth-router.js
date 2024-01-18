@@ -2,13 +2,17 @@ import express from "express";
 import authController from "../../controllers/auth-controller.js";
 import { authenticate, deleteOldAvatar, isEmptyBody, upload } from "../../middlewares/index.js";
 import { validateBody } from "../../decorators/index.js";
-import { updateSubscriptionSchema, userSchema } from "../../schemas/user-schemas.js";
+import { updateSubscriptionSchema, userSchema, verifyEmailSchema } from "../../schemas/user-schemas.js";
 
 const authRouter = express.Router();
 
 authRouter.post("/register", isEmptyBody, validateBody(userSchema), authController.singUp);
 
 authRouter.post("/login", isEmptyBody, validateBody(userSchema), authController.singIn);
+
+authRouter.get("/verify/:verificationToken", authController.verify);
+
+authRouter.post("/verify", validateBody(verifyEmailSchema), authController.reVerify);
 
 authRouter.post("/logout", authenticate, authController.signOut);
 
