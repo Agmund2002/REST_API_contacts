@@ -26,6 +26,14 @@ export const updateSubscriptionSchema = Joi.object({
     }),
 });
 
+export const verifyEmailSchema = Joi.object({
+  email: Joi.string().pattern(emailRegExp).required().messages({
+    "string.pattern.base":
+      "wrong format. correct email format: example@mail.com",
+    "any.required": "missing required email field",
+  }),
+});
+
 export const mongooseUserSchema = new Schema(
   {
     password: {
@@ -51,6 +59,13 @@ export const mongooseUserSchema = new Schema(
     token: {
       type: String,
       default: "",
+    },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
     },
   },
   {
